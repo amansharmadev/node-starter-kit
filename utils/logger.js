@@ -14,8 +14,8 @@ if (process.env.NODE_ENV === 'development') {
     );
 } else {
     transports.push(
-        new winston.transports.File({ filename: 'error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'access.log' }),
+        // new winston.transports.File({ filename: 'error.log', level: 'error' }),
+        // new winston.transports.File({ filename: 'access.log' }),
     )
 }
 

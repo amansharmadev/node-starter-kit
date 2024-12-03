@@ -3,7 +3,7 @@ require('dotenv').config();
 if (process.env.NODE_ENV === 'production') {
   console.log = () => {};
 }
-
+const promClient = require('prom-client');
 const express = require('express');
 const routes = require('./routes');
 const {
@@ -12,6 +12,7 @@ const {
 } = require('./utils/morgan');
 const logger = require('./utils/logger');
 
+promClient.collectDefaultMetrics({ register: promClient.Registry });
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
@@ -20,6 +21,10 @@ app.use(express.json());
 app.use(logRequest);
 app.use(logResponse);
 
+app.get('/metrics', async (req, res) => {
+  res.setHeader('Content-type', promClient.register.contentType);
+  res.send(await promClient.register.metrics());
+});
 app.use('/', routes);
 
 app.use('*', (req, res) => {
