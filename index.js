@@ -12,7 +12,11 @@ const {
 } = require('./utils/morgan');
 const logger = require('./utils/logger');
 
-promClient.collectDefaultMetrics({ register: promClient.Registry });
+// Collection APP Metrics here
+const register = new promClient.Registry();
+promClient.collectDefaultMetrics({ register });
+
+
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
@@ -21,9 +25,12 @@ app.use(express.json());
 app.use(logRequest);
 app.use(logResponse);
 
+/**
+ * metrics exposing here
+ */
 app.get('/metrics', async (req, res) => {
   res.setHeader('Content-type', promClient.register.contentType);
-  res.send(await promClient.register.metrics());
+  res.send(await register.metrics());
 });
 app.use('/', routes);
 
