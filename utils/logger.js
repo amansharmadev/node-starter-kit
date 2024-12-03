@@ -2,22 +2,6 @@ const winston = require('winston');
 
 const transports = [];
 
-if (process.env.NODE_ENV === 'development') {
-    transports.push(
-        new winston.transports.Console({
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.simple(),
-
-            )
-        })
-    );
-} else {
-    transports.push(
-        // new winston.transports.File({ filename: 'error.log', level: 'error' }),
-        // new winston.transports.File({ filename: 'access.log' }),
-    )
-}
 
 const logger = winston.createLogger({
   level: 'debug',
@@ -26,7 +10,15 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   defaultMeta: { service: 'user-service' },
-  transports,
+  transports: [
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.simple(),
+
+            )
+        })
+    ],
 });
 
 const wrapper = ( original ) => {
